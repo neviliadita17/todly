@@ -112,7 +112,7 @@ pub fn restore_inner(live: &mut Connection, src_path: &Path, safety: &Path) -> R
         let bk = Backup::new(&src, &mut *live).map_err(es)?;
         bk.run_to_completion(64, Duration::from_millis(5), None).map_err(es)?;
     }
-    live.execute_batch(include_str!("../migrations/001_init.sql")).map_err(es)?;
+    crate::db::ensure_schema(live)?;
     Ok(())
 }
 

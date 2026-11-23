@@ -64,12 +64,18 @@ export const api = {
   taskTimeline: (taskId: string) => invoke<HistoryEvent[]>("task_timeline", { taskId }),
 
   //Notes
-  listNotes: (query: string) => invoke<NoteItem[]>("list_notes", { query }),
+  listNotes: (query: string, folder: string) => invoke<NoteItem[]>("list_notes", { query, folder }),
   getNote: (id: string) => invoke<Note>("get_note", { id }),
-  createNote: () => invoke<Note>("create_note"),
+  createNote: (folderId: string | null) => invoke<Note>("create_note", { folderId }),
   updateNote: (id: string, content: string) => invoke<void>("update_note", { id, content }),
   setNotePinned: (id: string, pinned: boolean) => invoke<void>("set_note_pinned", { id, pinned }),
   deleteNote: (id: string) => invoke<void>("delete_note", { id }),
+  moveNote: (id: string, folderId: string | null) => invoke<void>("move_note", { id, folderId }),
+  groupNotes: (draggedId: string, targetId: string) => invoke<Folder>("group_notes", { draggedId, targetId }),
+  listFolders: () => invoke<FolderList>("list_folders"),
+  createFolder: (name: string) => invoke<Folder>("create_folder", { name }),
+  renameFolder: (id: string, name: string) => invoke<void>("rename_folder", { id, name }),
+  deleteFolder: (id: string) => invoke<void>("delete_folder", { id }),
 
   //Backup
   dbInfo: () => invoke<DbInfo>("db_info"),
@@ -190,6 +196,7 @@ export interface Note {
   id: string;
   content: string;
   pinned: boolean;
+  folderId: string | null;
   createdAt: string;
   updatedAt: string;
 }
@@ -198,8 +205,22 @@ export interface NoteItem {
   id: string;
   preview: string;
   pinned: boolean;
+  folderId: string | null;
+  folderName: string | null;
   createdAt: string;
   updatedAt: string;
+}
+
+export interface Folder {
+  id: string;
+  name: string;
+  count: number;
+}
+
+export interface FolderList {
+  folders: Folder[];
+  total: number;
+  unfiled: number;
 }
 
 export interface BackupFile {
