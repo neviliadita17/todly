@@ -178,6 +178,14 @@ export interface WorkedTask {
   late: boolean;
 }
 
+/** Task selesai disembunyikan dari papan setelah sekian hari sejak task dibuat. */
+export const ARCHIVE_AFTER_DAYS = 7;
+
+/** Disembunyikan dari papan saja; data tetap ada di database dan History. */
+export const isArchived = (t: Task, nowTs: number) =>
+  t.status === "completed" &&
+  new Date(t.completedAt ?? t.createdAt).getTime() + ARCHIVE_AFTER_DAYS * 864e5 <= nowTs;
+
 export interface Note {
   id: string;
   content: string;

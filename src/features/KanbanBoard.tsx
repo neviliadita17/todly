@@ -11,7 +11,8 @@ import {
 import { CSS } from "@dnd-kit/utilities";
 import { Clock, X } from "lucide-react";
 import { useTaskStore } from "../stores/taskStore";
-import { isOverdue } from "../lib/api";
+import { isArchived, isOverdue } from "../lib/api";
+import { useNow } from "../lib/useNow";
 import { useUiStore } from "../stores/uiStore";
 import TaskForm from "./TaskForm";
 import type { Priority, Status, Task } from "../lib/api";
@@ -156,7 +157,9 @@ function Column({
 }
 
 export default function KanbanBoard({ query }: { query: string }) {
-  const { tasks, reorder, remove } = useTaskStore();
+  const { tasks: allTasks, reorder, remove } = useTaskStore();
+  const nowTs = useNow();
+  const tasks = useMemo(() => allTasks.filter((t) => !isArchived(t, nowTs)), [allTasks, nowTs]);  const archivedCount = allTasks.length - tasks.length;
   const [cols, setCols] = useState<Cols>(() => build(tasks));
   const [activeId, setActiveId] = useState<string | null>(null);
 
@@ -256,6 +259,11 @@ export default function KanbanBoard({ query }: { query: string }) {
         </section>
         <DragOverlay>{activeTask ? <TaskCard task={activeTask} overlay /> : null}</DragOverlay>
       </DndContext>
+        {archivedCount > 0 && (
+        <p className="mt-3 text-xs text-slate-400">
+          "{archivedCount} task completed" disembunyikan karena sudah lebih dari 7 hari sejak task selesai. Semuanya tetap tersimpan di History &amp; Reports.
+        </p>
+      )}
       <TaskForm />
     </>
   );

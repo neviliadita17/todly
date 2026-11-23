@@ -5,7 +5,8 @@ import { CalendarClock, ExternalLink, EyeOff, Flag, Inbox, ListChecks, Pin, PinO
 import { useTaskStore } from "../stores/taskStore";
 import { useAgendaStore } from "../stores/agendaStore";
 import { useSync } from "../lib/useSync";
-import { api, dayKey, fmtTime, isOverdue, toLocalInput } from "../lib/api";
+import { api, dayKey, fmtTime, isArchived, isOverdue, toLocalInput } from "../lib/api";
+import { useNow } from "../lib/useNow";
 import type { Task } from "../lib/api";
 
 const DOT: Record<string, string> = {
@@ -53,7 +54,9 @@ function TaskRow({ t, onDone }: { t: Task; onDone: () => void }) {
 }
 
 export default function WidgetApp() {
-  const { tasks, load: loadTasks, add, move } = useTaskStore();
+  const { tasks: allTasks, load: loadTasks, add, move } = useTaskStore();
+  const nowTs = useNow();
+  const tasks = useMemo(() => allTasks.filter((t) => !isArchived(t, nowTs)), [allTasks, nowTs]);
   const { agendas, load: loadAgendas, save: saveAgenda } = useAgendaStore();
   const [now, setNow] = useState(Date.now());
   const [opacity, setOpacity] = useState(0.92);

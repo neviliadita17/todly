@@ -1,4 +1,6 @@
-import { useCallback, useState } from "react";
+import { useCallback, useMemo, useState } from "react";
+import { isArchived, isOverdue } from "./lib/api";
+import { useNow } from "./lib/useNow";
 import {
   ListTodo, CalendarDays, Calendar, CheckCircle2, BarChart3, Settings,
   Plus, Search, AlertCircle, AlertTriangle, Circle, Timer, Layers, FileText,
@@ -6,7 +8,6 @@ import {
 import { useTaskStore } from "./stores/taskStore";
 import { useAgendaStore } from "./stores/agendaStore";
 import { useSync } from "./lib/useSync";
-import { isOverdue } from "./lib/api";
 import type { Priority, Status } from "./lib/api";
 import AgendaPage from "./pages/AgendaPage";
 import CalendarPage from "./pages/CalendarPage";
@@ -50,7 +51,9 @@ const greeting = () => {
 };
 
 export default function App() {
-  const { tasks, error, load, add } = useTaskStore();
+  const { tasks: allTasks, error, load, add } = useTaskStore();
+  const nowTs = useNow();
+  const tasks = useMemo(() => allTasks.filter((t) => !isArchived(t, nowTs)), [allTasks, nowTs]);
   const [page, setPage] = useState<Page>("tasks");
   const [title, setTitle] = useState("");
   const [priority, setPriority] = useState<Priority>("medium");
