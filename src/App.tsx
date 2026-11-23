@@ -1,7 +1,7 @@
 import { useCallback, useState } from "react";
 import {
   ListTodo, CalendarDays, Calendar, CheckCircle2, BarChart3, Settings,
-  Plus, Search, AlertCircle, AlertTriangle, Circle, Timer, Layers,
+  Plus, Search, AlertCircle, AlertTriangle, Circle, Timer, Layers, FileText,
 } from "lucide-react";
 import { useTaskStore } from "./stores/taskStore";
 import { useAgendaStore } from "./stores/agendaStore";
@@ -13,12 +13,14 @@ import CalendarPage from "./pages/CalendarPage";
 import HistoryPage from "./pages/HistoryPage";
 import SettingsPage from "./pages/SettingsPage";
 import KanbanBoard from "./features/KanbanBoard";
+import NotesPage from "./pages/NotesPage";
 
-type Page = "dashboard" | "tasks" | "agenda" | "calendar" | "completed" | "history" | "settings";
+type Page = "dashboard" | "tasks" | "agenda" | "calendar" | "notes" | "completed" | "history" | "settings";
 
 const NAV: { id: Page; label: string; icon: typeof ListTodo; ready: boolean }[] = [
   // { id: "dashboard", label: "Dashboard", icon: LayoutDashboard, ready: false },
   { id: "tasks", label: "My Tasks", icon: ListTodo, ready: true },
+  { id: "notes", label: "Notes", icon: FileText, ready: true },
   { id: "agenda", label: "Agenda", icon: CalendarDays, ready: true },
   { id: "calendar", label: "Calendar", icon: Calendar, ready: true },
   // { id: "completed", label: "Completed", icon: CheckCircle2, ready: false },
@@ -132,6 +134,8 @@ export default function App() {
           <AgendaPage />
         ) : page === "calendar" ? (
           <CalendarPage />
+        ) : page === "notes" ? (
+          <NotesPage />
         ) : page === "history" ? (
           <HistoryPage />
         ) : page === "settings" ? (

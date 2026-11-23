@@ -5,6 +5,7 @@ mod history;
 mod reminders;
 mod tasks;
 mod widget;
+mod notes;
 
 use tauri::Manager;
 
@@ -54,6 +55,13 @@ pub fn run() {
             widget::open_main_window,
             widget::widget_drag,
             widget::widget_set_pinned,
+            backup::open_backup_folder,
+            notes::list_notes,
+            notes::get_note,
+            notes::create_note,
+            notes::update_note,
+            notes::set_note_pinned,
+            notes::delete_note,
             backup::db_info,
             backup::backup_now,
             backup::backup_db,

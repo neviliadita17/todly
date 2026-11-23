@@ -148,3 +148,13 @@ INSERT OR IGNORE INTO task_categories(id, name, color) VALUES
   ('cat-personal','Pribadi','#8b5cf6'),
   ('cat-study','Belajar','#14b8a6'),
   ('cat-other','Lainnya','#64748b');
+
+  CREATE TABLE IF NOT EXISTS notes (
+  id          TEXT PRIMARY KEY,
+  content     TEXT NOT NULL DEFAULT '',
+  pinned      INTEGER NOT NULL DEFAULT 0,
+  created_at  TEXT NOT NULL DEFAULT (strftime('%Y-%m-%dT%H:%M:%fZ','now')),
+  updated_at  TEXT NOT NULL DEFAULT (strftime('%Y-%m-%dT%H:%M:%fZ','now')),
+  deleted_at  TEXT
+);
+CREATE INDEX IF NOT EXISTS idx_notes_updated ON notes(pinned, updated_at) WHERE deleted_at IS NULL;

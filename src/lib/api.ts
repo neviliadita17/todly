@@ -63,6 +63,15 @@ export const api = {
   workedTasks: (from: string, to: string) => invoke<WorkedTask[]>("worked_tasks", { from, to }),
   taskTimeline: (taskId: string) => invoke<HistoryEvent[]>("task_timeline", { taskId }),
 
+  //Notes
+  listNotes: (query: string) => invoke<NoteItem[]>("list_notes", { query }),
+  getNote: (id: string) => invoke<Note>("get_note", { id }),
+  createNote: () => invoke<Note>("create_note"),
+  updateNote: (id: string, content: string) => invoke<void>("update_note", { id, content }),
+  setNotePinned: (id: string, pinned: boolean) => invoke<void>("set_note_pinned", { id, pinned }),
+  deleteNote: (id: string) => invoke<void>("delete_note", { id }),
+
+  //Backup
   dbInfo: () => invoke<DbInfo>("db_info"),
   backupNow: () => invoke<string>("backup_now"),
   backupDb: () => invoke<string | null>("backup_db"),
@@ -167,6 +176,22 @@ export interface WorkedTask {
   doneAt: string | null;
   startedAt: string | null;
   late: boolean;
+}
+
+export interface Note {
+  id: string;
+  content: string;
+  pinned: boolean;
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface NoteItem {
+  id: string;
+  preview: string;
+  pinned: boolean;
+  createdAt: string;
+  updatedAt: string;
 }
 
 export interface BackupFile {
