@@ -278,7 +278,13 @@ pub async fn restore_db(app: AppHandle) -> Result<Option<String>, String> {
 }
 
 fn explorer(dir: PathBuf) -> Result<(), String> {
-    std::process::Command::new("explorer")
+    #[cfg(target_os = "windows")]
+    let prog = "explorer";
+    #[cfg(target_os = "macos")]
+    let prog = "open";
+    #[cfg(all(not(target_os = "windows"), not(target_os = "macos")))]
+    let prog = "xdg-open";
+    std::process::Command::new(prog)
         .arg(dir)
         .spawn()
         .map(|_| ())

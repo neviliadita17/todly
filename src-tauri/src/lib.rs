@@ -77,6 +77,13 @@ pub fn run() {
             backup::open_data_folder,
             backup::open_backup_folder
         ])
-        .run(tauri::generate_context!())
-        .expect("gagal menjalankan Todly");
+        .build(tauri::generate_context!())
+        .expect("gagal membangun aplikasi")
+        .run(|_app, _event| {
+            // macOS: klik ikon Dock membuka kembali jendela utama
+            #[cfg(target_os = "macos")]
+            if let tauri::RunEvent::Reopen { .. } = _event {
+                widget::show_main(_app);
+            }
+        });
 }
